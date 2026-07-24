@@ -1,0 +1,398 @@
+/* ============================================================
+   Checklist de Conformidade Correcional — RI
+   Identidade: papel de protocolo + tinta de ata + selo de conformidade.
+   ============================================================ */
+
+:root{
+  --paper: #EDE8DA;
+  --paper-card: #F8F5EC;
+  --ink: #1C2541;
+  --ink-soft: #48507A;
+  --ink-faint: #7C82A0;
+  --line: #C9C0A6;
+  --line-soft: #DED6BE;
+  --seal: #2F5233;
+  --seal-soft: #DCE6DC;
+  --gold: #96691E;
+  --gold-soft: #EFE1C4;
+  --brick: #8C2F22;
+  --brick-soft: #EAD9D2;
+  --shadow: 0 1px 0 rgba(28,37,65,.06), 0 8px 24px -12px rgba(28,37,65,.18);
+
+  --font-display: "Source Serif 4", Georgia, serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+
+body{
+  background: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(28,37,65,0.025) 0px, rgba(28,37,65,0.025) 1px, transparent 1px, transparent 34px);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a{ color: var(--ink-soft); }
+
+/* ---------- Skip link / focus ---------- */
+:focus-visible{
+  outline: 2.5px solid var(--seal);
+  outline-offset: 2px;
+}
+
+/* ---------- Shell ---------- */
+.shell{
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 22px 80px;
+}
+
+/* ---------- Header / capa de protocolo ---------- */
+.capa{
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: 3px;
+  padding: 28px 30px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.capa::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:6px;
+  background: linear-gradient(90deg, var(--seal) 0 34%, var(--gold) 34% 67%, var(--brick) 67% 100%);
+}
+.capa-eyebrow{
+  font-family: var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+}
+.capa h1{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 30px;
+  margin: 6px 0 4px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.capa .subtitulo{
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  max-width: 640px;
+  margin-bottom: 20px;
+}
+
+.capa-fields{
+  display: grid;
+  grid-template-columns: 1.4fr 1fr .7fr;
+  gap: 14px;
+  margin-top: 6px;
+}
+.field label{
+  display:block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+.field input{
+  width: 100%;
+  border: none;
+  border-bottom: 1.5px solid var(--line);
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 17px;
+  padding: 3px 2px 6px;
+  color: var(--ink);
+}
+.field input:focus{ border-bottom-color: var(--seal); }
+.field input::placeholder{ color: var(--ink-faint); font-family: var(--font-body); font-size: 14px; }
+
+.capa-fonte{
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+/* ---------- Nav ---------- */
+.nav{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 20px;
+}
+.nav-btn{
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: .02em;
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  padding: 8px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.nav-btn .sigla{
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--line-soft);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 11px;
+}
+.nav-btn:hover{ border-color: var(--ink-soft); }
+.nav-btn.ativo{
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #F3F1E8;
+}
+.nav-btn.ativo .sigla{ background: rgba(255,255,255,.18); color:#fff; }
+.nav-btn.relatorio{ margin-left: auto; }
+.nav-btn.relatorio .sigla{ background: var(--seal); color:#fff; }
+
+/* ---------- Area section ---------- */
+.area{ display:none; }
+.area.ativa{ display:block; animation: fade .25s ease; }
+@keyframes fade{ from{opacity:0; transform: translateY(3px);} to{opacity:1; transform:none;} }
+
+.area-head{
+  display:flex; align-items:baseline; gap: 12px;
+  margin-bottom: 4px;
+}
+.area-head h2{
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin: 0;
+  color: var(--ink);
+}
+.area-head .contagem{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+.area-desc{ color: var(--ink-soft); font-size: 13.5px; margin: 2px 0 18px; }
+
+/* ---------- Question card (linha de protocolo) ---------- */
+.item{
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 16px 18px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.item-top{
+  display:flex; justify-content: space-between; align-items:flex-start; gap: 16px;
+  margin-bottom: 8px;
+}
+.item-id{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ink-soft);
+  border-radius: 3px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.item-pergunta{
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.42;
+  color: var(--ink);
+  flex: 1;
+}
+.item-ref{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  border-left: 2px solid var(--line-soft);
+  padding-left: 9px;
+  margin: 8px 0 14px;
+}
+.item-ref b{ color: var(--ink-soft); font-weight: 600; }
+
+.resposta-row{
+  display:flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.resp-opt{
+  position: relative;
+}
+.resp-opt input{ position:absolute; opacity:0; width:0; height:0; }
+.resp-opt label{
+  display:block;
+  cursor:pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  color: var(--ink-soft);
+  transition: all .12s;
+}
+.resp-opt input:checked + label{ color:#fff; border-color: transparent; }
+.resp-opt.sim input:checked + label{ background: var(--seal); }
+.resp-opt.parcial input:checked + label{ background: var(--gold); }
+.resp-opt.nao input:checked + label{ background: var(--brick); }
+.resp-opt label:hover{ border-color: var(--ink-soft); }
+
+.grid-2{
+  display:grid; grid-template-columns: 1fr 1.6fr; gap: 12px;
+}
+.grid-2 .campo label, .item .campo label{
+  display:block; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--ink-faint); margin-bottom: 4px;
+}
+.campo input[type="text"], .campo textarea{
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 7px 9px;
+  background: #fff;
+  color: var(--ink);
+  resize: vertical;
+}
+.campo textarea{ min-height: 46px; }
+.campo input:focus, .campo textarea:focus{ border-color: var(--seal); }
+
+/* ---------- Barra inferior fixa ---------- */
+.barra{
+  position: sticky; bottom: 14px;
+  margin-top: 26px;
+  background: var(--ink);
+  color: #F3F1E8;
+  border-radius: 999px;
+  padding: 10px 10px 10px 20px;
+  display:flex; align-items:center; gap: 14px;
+  box-shadow: 0 10px 30px -8px rgba(28,37,65,.45);
+}
+.barra .progresso-txt{
+  font-family: var(--font-mono); font-size: 12px; white-space:nowrap;
+}
+.progresso-barra{
+  flex:1; height: 6px; background: rgba(255,255,255,.16); border-radius: 999px; overflow:hidden;
+}
+.progresso-fill{ height:100%; background: linear-gradient(90deg,var(--seal),#5c8a63); border-radius: 999px; transition: width .3s; }
+.barra-btns{ display:flex; gap:8px; }
+.btn{
+  font-family: var(--font-body); font-weight: 600; font-size: 12.5px;
+  border:none; border-radius: 999px; padding: 9px 16px; cursor:pointer;
+  background: rgba(255,255,255,.12); color:#fff; transition: background .15s;
+  white-space: nowrap;
+}
+.btn:hover{ background: rgba(255,255,255,.22); }
+.btn.primario{ background: var(--seal); }
+.btn.primario:hover{ background: #396b3f; }
+.btn.claro{ background: #F3F1E8; color: var(--ink); }
+.btn.claro:hover{ background: #fff; }
+
+/* ---------- Relatório ---------- */
+.relatorio{ display:none; }
+.relatorio.ativa{ display:block; animation: fade .25s ease; }
+
+.rel-head{
+  display:flex; gap: 26px; align-items:center;
+  background: var(--paper-card); border:1px solid var(--line); border-radius: 3px;
+  padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px;
+}
+.selo-wrap{ flex-shrink:0; }
+.rel-head-txt h2{
+  font-family: var(--font-display); font-size: 24px; margin:0 0 6px;
+}
+.rel-head-txt p{ margin: 0 0 4px; color: var(--ink-soft); font-size: 13.5px; }
+.rel-head-txt .cartorio-nome{ font-weight:700; color: var(--ink); }
+
+.rel-resumo{
+  display:grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 22px;
+}
+.resumo-card{
+  background: var(--paper-card); border:1px solid var(--line); border-radius:3px;
+  padding: 14px 16px; text-align:center;
+}
+.resumo-card .num{ font-family: var(--font-display); font-size: 26px; display:block; }
+.resumo-card .lbl{ font-family: var(--font-mono); font-size: 10.5px; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-faint); }
+.resumo-card.sim .num{ color: var(--seal); }
+.resumo-card.parcial .num{ color: var(--gold); }
+.resumo-card.nao .num{ color: var(--brick); }
+.resumo-card.pendente .num{ color: var(--ink-faint); }
+
+.rel-conclusao{
+  background: var(--paper-card); border:1px solid var(--line); border-radius:3px;
+  padding: 20px 24px; margin-bottom: 22px; box-shadow: var(--shadow);
+}
+.rel-conclusao h3{ font-family: var(--font-display); margin:0 0 10px; font-size:18px; }
+.rel-conclusao p{ margin: 0 0 10px; font-size: 14px; color: var(--ink); }
+
+.rel-area-bloco{ margin-bottom: 20px; }
+.rel-area-bloco h3{
+  font-family: var(--font-display); font-size: 17px; margin: 0 0 8px;
+  display:flex; align-items:center; gap:10px;
+}
+.rel-area-bloco h3 .tag{
+  font-family: var(--font-mono); font-size:11px; background: var(--line-soft);
+  border-radius: 999px; padding: 2px 9px; color: var(--ink-soft);
+}
+.pendencia{
+  border-left: 3px solid var(--brick);
+  background: var(--brick-soft);
+  padding: 10px 14px; border-radius: 0 3px 3px 0; margin-bottom: 8px;
+}
+.pendencia.parcial{ border-left-color: var(--gold); background: var(--gold-soft); }
+.pendencia .p-titulo{ font-weight:700; font-size: 13.5px; margin-bottom:3px; }
+.pendencia .p-ref{ font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-soft); margin-bottom: 4px; }
+.pendencia .p-prov{ font-size: 12.5px; color: var(--ink); }
+.pendencia .p-meta{ font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; font-style: italic; }
+.sem-pendencia{
+  border-left: 3px solid var(--seal); background: var(--seal-soft);
+  padding: 10px 14px; border-radius: 0 3px 3px 0; font-size: 13px; color: var(--ink);
+}
+
+.rel-acoes{ display:flex; gap:10px; margin: 18px 0 40px; flex-wrap: wrap; }
+
+footer.rodape{
+  text-align:center; font-family: var(--font-mono); font-size: 11px;
+  color: var(--ink-faint); margin-top: 46px;
+}
+
+/* ---------- Selo SVG ---------- */
+.selo-svg text{ font-family: var(--font-mono); }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 720px){
+  .capa-fields{ grid-template-columns: 1fr; }
+  .grid-2{ grid-template-columns: 1fr; }
+  .rel-resumo{ grid-template-columns: repeat(2,1fr); }
+  .rel-head{ flex-direction:column; text-align:center; }
+  .nav-btn.relatorio{ margin-left:0; }
+  .barra{ flex-wrap: wrap; border-radius: 16px; }
+}
+
+/* ---------- Impressão / PDF ---------- */
+@media print{
+  body{ background:#fff; }
+  .nav, .barra, .rel-acoes, .capa-fonte, .area{ display:none !important; }
+  .capa{ box-shadow:none; }
+  .relatorio{ display:block !important; }
+  .resumo-card, .rel-conclusao, .rel-head, .pendencia, .sem-pendencia{ box-shadow:none; break-inside: avoid; }
+  .rel-area-bloco{ break-inside: avoid; }
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Conformidade Correcional — Registro de Imóveis</title>
+<meta name="description" content="Checklist de verificação de requisitos correcionais para cartórios de Registro de Imóveis, com base no Boletim de Inspeções CNJ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Capa / cabeçalho -->
+  <header class="capa">
+    <div class="capa-eyebrow">Checklist de conformidade correcional · Registro de Imóveis</div>
+    <h1>Verificação de Requisitos Correcionais</h1>
+    <p class="subtitulo">Ferramenta de autoavaliação para oficiais de Registro de Imóveis, construída a partir dos apontamentos e determinações da inspeção ordinária do CNJ. Preencha os campos abaixo e responda cada item por área.</p>
+
+    <div class="capa-fields">
+      <div class="field">
+        <label for="in-cartorio">Nome do cartório</label>
+        <input type="text" id="in-cartorio" placeholder="Ex.: 5º Ofício de Registro de Imóveis de São Paulo" list="lista-cartorios" autocomplete="off">
+        <datalist id="lista-cartorios"></datalist>
+      </div>
+      <div class="field">
+        <label for="in-titular">Titular / responsável pelo preenchimento</label>
+        <input type="text" id="in-titular" placeholder="Nome do oficial ou preposto">
+      </div>
+      <div class="field">
+        <label for="in-data">Data de referência</label>
+        <input type="date" id="in-data">
+      </div>
+    </div>
+
+    <div class="capa-fonte">
+      Base normativa: Boletim de Inspeções CNJ (KollGEN) — Inspeção ordinária da Corregedoria Nacional de Justiça, Foro Extrajudicial, TJSP, 4 a 8 de maio de 2026. Cada item indica o dispositivo correcional e/ou normativo correspondente.
+    </div>
+  </header>
+
+  <!-- Navegação -->
+  <nav class="nav" id="nav" aria-label="Áreas do checklist"></nav>
+
+  <!-- Áreas / perguntas -->
+  <main id="areas"></main>
+
+  <!-- Barra de progresso e ações -->
+  <div class="barra" id="barra">
+    <span class="progresso-txt" id="progresso-txt">0 de 0 itens respondidos (0%)</span>
+    <div class="progresso-barra"><div class="progresso-fill" id="progresso-fill" style="width:0%"></div></div>
+    <div class="barra-btns">
+      <button class="btn" id="btn-importar">Importar</button>
+      <input type="file" id="input-importar" accept="application/json" style="display:none">
+      <button class="btn" id="btn-exportar">Exportar</button>
+      <button class="btn" id="btn-novo">Novo</button>
+      <button class="btn primario" id="btn-relatorio">Gerar relatório</button>
+    </div>
+  </div>
+
+  <!-- Relatório -->
+  <section class="relatorio" id="relatorio">
+    <div class="rel-head">
+      <div class="selo-wrap" id="selo-container"></div>
+      <div class="rel-head-txt">
+        <h2>Relatório de Conformidade Correcional</h2>
+        <p class="cartorio-nome" id="rel-cartorio">Cartório não identificado</p>
+        <p id="rel-titular"></p>
+        <p id="rel-data"></p>
+        <p id="rel-gerado"></p>
+      </div>
+    </div>
+
+    <div class="rel-resumo">
+      <div class="resumo-card sim"><span class="num" id="resumo-sim">0</span><span class="lbl">Sim, atende</span></div>
+      <div class="resumo-card parcial"><span class="num" id="resumo-parcial">0</span><span class="lbl">Parcial</span></div>
+      <div class="resumo-card nao"><span class="num" id="resumo-nao">0</span><span class="lbl">Não atende</span></div>
+      <div class="resumo-card pendente"><span class="num" id="resumo-pendente">0</span><span class="lbl">Não avaliado</span></div>
+    </div>
+
+    <div class="rel-conclusao">
+      <h3>Conclusão</h3>
+      <div id="rel-conclusao-corpo"></div>
+    </div>
+
+    <div class="rel-acoes">
+      <button class="btn primario" id="btn-imprimir">Baixar / imprimir PDF</button>
+      <button class="btn claro" id="btn-exportar-2" onclick="exportarJSON()">Exportar respostas (JSON)</button>
+    </div>
+
+    <h3 style="font-family:var(--font-display); font-size:19px; margin:6px 0 14px;">Pendências e providências recomendadas, por área</h3>
+    <div id="rel-areas"></div>
+
+    <div class="rel-acoes">
+      <button class="btn primario" id="btn-imprimir-2">Baixar / imprimir PDF</button>
+    </div>
+  </section>
+
+  <footer class="rodape">
+    Ferramenta de autoavaliação de uso interno · dados armazenados apenas neste navegador · não substitui orientação jurídica ou correicional formal.
+  </footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
