@@ -220,11 +220,20 @@ function montarItem(item){
     `;
   }
 
+  let resumoHtml = "";
+  if(item.resumo){
+    resumoHtml = `
+      <button type="button" class="saiba-mais-btn" data-toggle="resumo-${item.id}">Saiba mais</button>
+      <div class="item-resumo" id="resumo-${item.id}" hidden>${escapeHtml(item.resumo)}</div>
+    `;
+  }
+
   card.innerHTML = `
     <div class="item-top">
       <span class="item-id">${item.id}</span>
       <div class="item-pergunta">${item.pergunta}</div>
     </div>
+    ${resumoHtml}
     <div class="item-ref"><strong>Referência:</strong> ${linkify(item.referencia)}</div>
     <div class="resposta-row" role="radiogroup" aria-label="Resposta para ${item.id}">
       <div class="resp-opt sim">
@@ -250,6 +259,17 @@ function montarItem(item){
       <div class="anexo-row" id="anexo-row-${item.id}"></div>
     </div>
   `;
+
+  if(item.resumo){
+    const btnSaibaMais = card.querySelector(".saiba-mais-btn");
+    btnSaibaMais.addEventListener("click", () => {
+      const bloco = card.querySelector(`#resumo-${item.id}`);
+      const aberto = !bloco.hidden;
+      bloco.hidden = aberto;
+      btnSaibaMais.textContent = aberto ? "Saiba mais" : "Ocultar explicação";
+      btnSaibaMais.classList.toggle("aberto", !aberto);
+    });
+  }
 
   card.querySelectorAll('input[type="radio"]').forEach(r => {
     r.addEventListener("change", () => atualizarResposta(item));
