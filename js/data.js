@@ -19,32 +19,37 @@ const AREAS = [
       {
         id: "F1",
         pergunta: "O depósito prévio é escriturado pelo regime de caixa, e não pelo regime de competência?",
+        resumo: "Regime de caixa: a receita é reconhecida quando o dinheiro efetivamente entra na conta. Regime de competência: seria reconhecida quando o serviço é prestado, ainda que o pagamento venha depois. Para fins tributários, delegatários devem usar o regime de caixa — inclusive para os valores recebidos como depósito prévio.",
         referencia: "Art. 34 do Decreto n. 9.580/2018; Soluções de Consulta Cosit n. 183 e 278/2023; Manual de Orientação Tributária – Cartórios/RFB (04/2026) — Itens CNJ 10.2.5; 10.4.13; 10.6.5; 10.7.8.3; 10.8.13.1.5",
         providencia: "Adequar a escrituração contábil do depósito prévio ao regime de caixa exigido dos delegatários."
       },
       {
         id: "F2",
         pergunta: "Existe e está atualizado o Livro de Controle de Depósito Prévio?",
+        resumo: "Para cada valor recebido antecipadamente, o livro deve identificar quem pagou, para qual ato, a data do recebimento, o destino do valor (se foi convertido em receita ou devolvido) e, se devolvido, quando isso ocorreu.",
         referencia: "Art. 188 do Provimento CNJ n. 149/2023 — Itens CNJ 10.2.5; 10.4.13",
         providencia: "Abrir e manter o Livro de Controle de Depósito Prévio, com lançamentos regulares."
       },
       {
         id: "F3",
         pergunta: "Os valores são discriminados de forma detalhada em recibos, selos e no corpo dos atos registrais (e não apenas o número do selo)?",
-        referencia: "Art. 14, parágrafo único, da Lei n. 6.015/1973 — Achado transversal, Boletim CNJ",
-        providencia: "Padronizar a discriminação detalhada dos valores em recibos, selos e no corpo dos atos."
+        resumo: "Não basta anotar o número do selo. O documento (recibo, selo ou o próprio ato) deve mostrar os valores de cada parcela cobrada: emolumentos, prenotação, taxas, repasses legais, custas e demais itens.",
+        referencia: "Art. 14, parágrafo único, da Lei n. 6.015/1973 — Achado transversal, relatório de inspeção CNJ",
+        providencia: "Padronizar a discriminação detalhada dos valores em recibos, selos e no corpo dos atos. Se o sistema informatizado não permitir essa discriminação automaticamente, providenciar a adequação tecnológica necessária."
       },
       {
         id: "F4",
         pergunta: "Existe conta bancária específica e segregada para depósitos prévios, sem confusão patrimonial com recursos próprios da serventia?",
-        referencia: "Achado transversal, Boletim CNJ — Itens CNJ 10.7.8.3; 10.8.13.1.5",
-        providencia: "Abrir conta bancária segregada exclusiva para depósitos prévios."
+        resumo: "O valor deve entrar numa conta exclusiva para depósitos prévios. Só deve ser transferido para a conta de emolumentos da serventia no momento em que o depósito é efetivamente convertido em receita (ou seja, quando o ato é praticado).",
+        referencia: "Achado transversal, relatório de inspeção CNJ — Itens CNJ 10.7.8.3; 10.8.13.1.5",
+        providencia: "Abrir conta bancária segregada exclusiva para depósitos prévios, movimentando para a conta de emolumentos apenas quando o depósito for convertido em receita."
       },
       {
         id: "F5",
         pergunta: "Há procedimento padronizado para devolução de valores de depósito prévio quando o ato não é praticado, retendo apenas a parcela de prenotação?",
-        referencia: "Determinações (30/60 dias), Achado transversal, Boletim CNJ",
-        providencia: "Instituir procedimento formal e padronizado de devolução de valores não utilizados."
+        resumo: "Ao devolver um valor: retenha só a parte referente à prenotação (o serviço de qualificação já foi prestado); emita recibo discriminado da devolução; lance a devolução no Livro-Caixa como despesa, no mês em que ela ocorreu; e guarde os comprovantes organizados para fiscalização.",
+        referencia: "Determinações (30/60 dias), relatório de inspeção CNJ",
+        providencia: "Instituir procedimento formal e padronizado de devolução de valores não utilizados, com recibo discriminado e escrituração da devolução no Livro-Caixa no mês de sua efetivação."
       },
       {
         id: "F6",
@@ -61,8 +66,9 @@ const AREAS = [
       {
         id: "F8",
         pergunta: "Foi realizado estudo técnico e, se necessário, constituído fundo de provisionamento trabalhista para os colaboradores da serventia, compatível com o passivo estimado?",
+        resumo: "O estudo deve indicar a metodologia de cálculo do valor necessário, os riscos envolvidos (rescisões, verbas trabalhistas, eventual extinção da delegação) e, se for o caso, um plano de implementação do fundo.",
         referencia: "Itens CNJ 10.6.8; 10.6.9 / Rec. 3.6.20.1",
-        providencia: "Elaborar estudo técnico e constituir fundo de provisionamento trabalhista compatível com o passivo estimado, quando aplicável."
+        providencia: "Elaborar ou atualizar estudo técnico (com metodologia de cálculo e riscos envolvidos) e constituir fundo de provisionamento trabalhista compatível com o passivo estimado, quando aplicável."
       }
     ]
   },
@@ -111,12 +117,14 @@ const AREAS = [
       {
         id: "RH7",
         pergunta: "A remuneração de colaboradores e a receita líquida do delegatário (titular ou interino) respeitam o teto de subsídio de Ministro do STF, com o excedente recolhido conforme as normas aplicáveis, ou há autorização fundamentada da Corregedoria para eventual excesso?",
+        resumo: "Esse teto usa como referência o subsídio de Ministro do STF e incide sobre a receita líquida do delegatário — não apenas sobre o salário de colaboradores. Havendo remuneração acima do teto (do delegatário ou de colaboradores custeados pela serventia), é preciso justificativa formal perante a Corregedoria.",
         referencia: "Art. 21 da Lei n. 8.935/1994; jurisprudência do STF sobre teto remuneratório de delegatários — Itens CNJ 3.6.10.2; 10.4.11 / Det. 10.4.13",
         providencia: "Ajustar remunerações ao teto legal ou formalizar justificativa fundamentada perante a Corregedoria — aplicável tanto a titulares quanto a interinos."
       },
       {
         id: "RH8",
         pergunta: "A serventia mantém organizados os atos normativos editados ou, na ausência destes, o cronograma e as providências relativas à implementação do Provimento CNJ n. 220/2026, para eventual prestação de informações à Corregedoria?",
+        resumo: "A Corregedoria-Geral precisa informar periodicamente ao CNJ o estágio de implementação desse Provimento. Ter a documentação organizada evita atraso na hora de responder a uma solicitação formal.",
         referencia: "Determinação (30 dias): informar à Corregedoria Nacional o estágio de implementação das disposições do Provimento CNJ n. 220/2026, encaminhando os atos normativos editados ou, se pendente a adequação, o cronograma e as providências previstas — Item CNJ 3.6.19.1.1",
         providencia: "Reunir e manter atualizados os atos normativos, ou o cronograma de adequação, referentes ao Provimento CNJ n. 220/2026."
       }
@@ -181,6 +189,7 @@ const AREAS = [
       {
         id: "TI4",
         pergunta: "O selo digital é gerado com controle centralizado, evitando saltos de numeração ou atos não transmitidos ('selos em branco')?",
+        resumo: "Sem um controle central de quais números de selo já foram reservados, é difícil detectar se algum ato foi praticado sem gerar o selo correspondente (um 'salto' na numeração).",
         referencia: "Item CNJ 3.6.12 / Det. 3.6.19.3.1 a 3.6.19.3.8",
         providencia: "Avaliar/adotar mecanismo centralizado de pré-reserva e rastreamento de identificadores de selo."
       },
@@ -199,20 +208,37 @@ const AREAS = [
       {
         id: "TI7",
         pergunta: "O Sistema Justiça Aberta é alimentado de forma correta e atualizada (produtividade, situação da delegação, dados cadastrais)?",
+        resumo: "Divergências comuns incluem: telefone e endereço eletrônico desatualizados, data de nomeação/assunção do delegatário diferente da informada em outros documentos, e quantitativo ou regime jurídico de colaboradores incorreto.",
         referencia: "Item CNJ 3.6.10.3 / Det. 3.6.19.2.3",
-        providencia: "Instituir rotina periódica de atualização e conferência dos dados no Justiça Aberta."
+        providencia: "Instituir rotina periódica de atualização e conferência dos dados no Justiça Aberta, com atenção especial a contatos, data de nomeação e quadro de colaboradores."
       },
       {
         id: "TI8",
         pergunta: "O DPO (Encarregado de Proteção de Dados) está formalmente designado e a política de proteção de dados é divulgada a usuários e colaboradores?",
-        referencia: "Boas práticas e achados da inspeção CNJ — Item CNJ 10.6.8",
-        providencia: "Designar formalmente o DPO e divulgar a política de proteção de dados."
+        resumo: "A divulgação deve ser ostensiva: por exemplo, afixada em local visível ao público e também disponível por QR Code, indicando o nome do encarregado (DPO) e um canal de contato. Vale também conferir se os termos de compromisso de prestadores de serviço quanto à privacidade de dados estão assinados e atualizados.",
+        referencia: "Lei n. 13.709/2018 (LGPD); Provimento CNJ n. 149/2023 — Item CNJ 10.6.8",
+        providencia: "Designar formalmente o DPO e divulgar a política de proteção de dados de forma ostensiva (afixação física e QR Code), com indicação do encarregado e canal de contato."
       },
       {
         id: "TI9",
         pergunta: "A serventia dispõe de sinalização tátil e demais recursos de acessibilidade física e digital ao público?",
-        referencia: "Det. 10.6.9",
-        providencia: "Implantar sinalização tátil e demais recursos de acessibilidade."
+        resumo: "A sinalização tátil direcional e de alerta ajuda pessoas com deficiência visual a se orientar dentro da serventia.",
+        referencia: "Art. 10-A da Lei n. 10.098/2000; ABNT NBR 16537; Lei n. 13.146/2015; Decreto n. 5.296/2004 — Det. 10.6.9",
+        providencia: "Implantar sinalização tátil direcional e de alerta e demais recursos de acessibilidade, conforme a ABNT NBR 16537."
+      },
+      {
+        id: "TI10",
+        pergunta: "A serventia já identificou sua classe de risco tecnológico (I, II ou III) segundo o Provimento CNJ n. 213/2026 e tem um plano de adequação com diagnóstico, medidas já implementadas e cronograma das pendentes?",
+        resumo: "O Provimento CNJ n. 213/2026 trata da governança e segurança da infraestrutura tecnológica das serventias extrajudiciais, classificando-as por nível de risco. O plano de adequação deve mostrar o que já foi feito e o que ainda falta, com prazos.",
+        referencia: "Provimento CNJ n. 213/2026 — achados da inspeção CNJ em serventias de Registro de Imóveis",
+        providencia: "Elaborar ou atualizar o plano de adequação ao Provimento CNJ n. 213/2026, com diagnóstico da infraestrutura, classe de risco identificada e cronograma de implementação."
+      },
+      {
+        id: "TI11",
+        pergunta: "Existe Política de Segurança da Informação formalizada e integrada a um Plano de Continuidade de Negócios, com tempo e ponto de recuperação (RTO/RPO) definidos e já testados na prática?",
+        resumo: "RTO é por quanto tempo o serviço pode ficar fora do ar até ser restabelecido; RPO é quanto tempo de dados a serventia pode se permitir perder num incidente. Definir esses números no papel não basta — é preciso testar a restauração na prática. Vale também verificar se há autenticação multifator (MFA) para acessos administrativos e sistemas críticos, e se os contratos com fornecedores de TI preveem confidencialidade, reversibilidade e portabilidade dos dados.",
+        referencia: "Provimento CNJ n. 213/2026 — achados da inspeção CNJ em serventias de Registro de Imóveis",
+        providencia: "Formalizar a Política de Segurança da Informação e o Plano de Continuidade de Negócios, definir RTO/RPO e realizar testes periódicos de restauração."
       }
     ]
   },
@@ -225,6 +251,7 @@ const AREAS = [
       {
         id: "IN1",
         pergunta: "A serventia possui alvará de localização válido junto à Municipalidade?",
+        resumo: "Se o alvará estiver vencido ou nunca tiver sido obtido, o mínimo é ter o protocolo do pedido e comprovar que o processo está em andamento.",
         referencia: "Det. 10.7.12.1",
         providencia: "Adotar as providências perante a Municipalidade para obtenção do alvará de localização, comprovando o protocolo."
       },
@@ -251,6 +278,7 @@ const AREAS = [
       {
         id: "PLD1",
         pergunta: "A serventia comunica ao COAF/UIF (via SCAF) operações com indícios de lavagem de dinheiro ou financiamento ao terrorismo, adotando critérios que vão além do mero valor em espécie?",
+        resumo: "O nome completo do programa é Prevenção à Lavagem de Dinheiro, ao Financiamento do Terrorismo e à Proliferação de Armas de Destruição em Massa (PLD/FTP). Usar só o critério de 'valor em espécie acima de X' deixa passar outras operações suspeitas — por exemplo, discrepância entre o valor declarado e o valor de mercado do imóvel.",
         referencia: "Item CNJ 3.6.16 / Det. 3.6.19.3.14",
         providencia: "Revisar os critérios de comunicação ao COAF/UIF, superando o critério único de valor em espécie.",
         extra: { chave: "totalComunicacoes", label: "Total de comunicações ao COAF/UIF realizadas desde 2020", tipo: "number", placeholder: "Ex.: 38" }
@@ -264,6 +292,7 @@ const AREAS = [
       {
         id: "PLD3",
         pergunta: "Existe protocolo interno formal de prevenção, identificação e comunicação de fraudes documentais (falsificações, discrepância entre valor declarado e valor de mercado, usurpação de identidade)?",
+        resumo: "Um programa completo de PLD/FTP inclui: política institucional escrita, rotinas de identificação e qualificação de partes e operações, critérios internos para reconhecer operações suspeitas, registro das operações avaliadas e controle sobre a ausência de comunicações quando aplicável.",
         referencia: "Achados e boas práticas identificados pela inspeção CNJ — Det. 10.8.13",
         providencia: "Formalizar protocolo interno de prevenção, identificação e comunicação de fraudes."
       }
@@ -278,36 +307,41 @@ const AREAS = [
       {
         id: "RI1",
         pergunta: "Em pedidos de usucapião extrajudicial, há diligência específica para identificar a utilização em série da modalidade em um mesmo empreendimento ou condomínio?",
+        resumo: "Usucapião extrajudicial em série no mesmo empreendimento ou condomínio pode indicar uso indevido do instrumento — por exemplo, para regularizar situações que deveriam seguir outro caminho legal ou para fins de sonegação fiscal.",
         referencia: "Art. 410, §2º, do CNN/CN/CNJ-Extra — Det. 10.2.9.1.10",
         providencia: "Instituir diligência específica de aferição da utilização em série da usucapião extraordinária."
       },
       {
         id: "RI2",
         pergunta: "Os atos registrais decorrentes de usucapião incluem todos os elementos cadastrais essenciais do imóvel, inclusive o CEP (princípio da especialidade objetiva)?",
+        resumo: "Além do CEP, o registro deve indicar expressamente a modalidade de usucapião reconhecida (ordinária, extraordinária etc.) e o fundamento jurídico da aquisição, e não apenas remeter à decisão de deferimento.",
         referencia: "Art. 440-AQ, §1º, do CNN/CN/CNJ-Extra — Det. 10.2.9.1.11",
-        providencia: "Padronizar a inclusão de todos os elementos cadastrais essenciais, inclusive CEP, no ato registral."
+        providencia: "Padronizar a inclusão de todos os elementos cadastrais essenciais, inclusive CEP, além da modalidade e do fundamento jurídico da usucapião, no ato registral."
       },
       {
         id: "RI3",
         pergunta: "As atas notariais de usucapião recebidas são qualificadas com rigor, com devolução quando se limitarem a reproduzir declarações das partes?",
-        referencia: "Itens CNJ 10.6.8; 10.6.9",
-        providencia: "Instituir rotina de qualificação rigorosa das atas notariais de usucapião, com nota devolutiva quando cabível."
+        resumo: "A ata notarial precisa mostrar que o tabelião de fato verificou elementos concretos — a posse, o tempo de posse (prazo aquisitivo) e a intenção de dono (animus domini) — e não apenas repetiu o que as partes disseram.",
+        referencia: "Lei n. 6.015/1973; Provimento CNJ n. 149/2023 — Itens CNJ 10.6.8; 10.6.9",
+        providencia: "Instituir rotina de qualificação rigorosa das atas notariais de usucapião, com nota devolutiva fundamentada quando a ata não contiver elementos mínimos de diligência do notário."
       },
       {
         id: "RI4",
         pergunta: "Toda aquisição de imóvel rural por estrangeiro é submetida a análise prévia, com sistema e base cartográfica próprios, antes da qualificação registral positiva?",
-        referencia: "Item CNJ 3.6.18",
-        providencia: "Implantar/manter sistema próprio de análise prévia de aquisição de terras rurais por estrangeiros."
+        resumo: "A atenção deve valer também para pessoas jurídicas brasileiras com participação ou controle relevante de capital estrangeiro no seu quadro societário — não apenas para estrangeiros adquirindo diretamente em seu próprio nome.",
+        referencia: "Lei n. 5.709/1971 — Item CNJ 3.6.18",
+        providencia: "Implantar/manter sistema próprio de análise prévia de aquisição de terras rurais por estrangeiros, incluindo pessoas jurídicas brasileiras com controle estrangeiro relevante."
       },
       {
         id: "RI5",
         pergunta: "Havendo indícios de extrapolação dos limites legais de aquisição por estrangeiros, é instaurado Pedido de Providências com remessa ao INCRA e suspensão do registro?",
-        referencia: "Item CNJ 3.6.18",
+        referencia: "Lei n. 5.709/1971 — Item CNJ 3.6.18",
         providencia: "Formalizar fluxo de instauração de Pedido de Providências e remessa ao INCRA em casos de indício de extrapolação."
       },
       {
         id: "RI6",
         pergunta: "A atuação em processos de Regularização Fundiária Urbana (Reurb) se limita à fiscalização e orientação normativa, sem assunção de funções executivas de política pública?",
+        resumo: "Formular ou implementar a política de Reurb é papel das secretarias municipais, do ITESP, da CDHU e da COHAB-SP — o cartório fiscaliza e orienta a atividade registral, sem assumir essas funções executivas.",
         referencia: "Item CNJ 3.6.17; itens 297 a 324 das Normas de Serviço",
         providencia: "Reafirmar, em manual interno, os limites da atuação registral em processos de Reurb, sem assunção de função executiva."
       },
@@ -316,6 +350,13 @@ const AREAS = [
         pergunta: "Os valores recebidos de terceiros para notificações extrajudiciais (ex.: purga de mora em alienação fiduciária) são regularmente escriturados em conta própria do RI?",
         referencia: "Manual de Orientação Tributária – Cartórios/RFB (29/04/2026) — Det. 10.7.12.1",
         providencia: "Escriturar de forma segregada e rastreável os valores recebidos para notificações extrajudiciais."
+      },
+      {
+        id: "RI8",
+        pergunta: "A consulta à Central Nacional de Indisponibilidade de Bens (CNIB) na serventia está consistente com a base nacional mantida pelo ONR, sem indisponibilidades mostradas como 'canceladas' localmente quando ainda estão 'ativas' na base nacional?",
+        resumo: "A CNIB é a base oficial de bloqueios judiciais sobre imóveis. Se o sistema local diverge da base nacional do ONR sobre o status de uma indisponibilidade, um registro pode ser indevidamente liberado, dando ao usuário a falsa impressão de que não há impedimento.",
+        referencia: "Achados da inspeção CNJ em serventia de Registro de Imóveis — integração com a Central Nacional de Indisponibilidade de Bens (CNIB 2.0)",
+        providencia: "Auditar a integração do sistema local com a CNIB/ONR e adotar mecanismos redundantes de verificação do status das indisponibilidades, especialmente para pessoas jurídicas com múltiplas unidades locais."
       }
     ]
   },
@@ -342,12 +383,14 @@ const AREAS = [
       {
         id: "PV1",
         pergunta: "Existe protocolo de governança por escrito para identificar e coibir atos que possam envolver violência patrimonial contra idosos, mulheres e a população vulnerável em geral?",
+        resumo: "Violência patrimonial é o uso indevido de bens ou dinheiro de uma pessoa vulnerável, muitas vezes por familiares ou pessoas de confiança — por exemplo, induzindo-a a assinar um documento sem entender bem o que está fazendo.",
         referencia: "Provimento CNJ n. 222/2026 — Item CNJ 10.5.10.3",
         providencia: "Elaborar e formalizar protocolo de governança para identificação e prevenção de violência patrimonial."
       },
       {
         id: "PV2",
         pergunta: "Existe check-list padronizado de cautelas para atendimento ou qualificação de títulos envolvendo pessoas idosas, vulneráveis ou com possível limitação de compreensão, incluindo, quando aplicável, entrevista reservada?",
+        resumo: "As cautelas incluem, por exemplo: conversar em algum momento sozinho com a pessoa (sem a presença de quem a acompanha), avaliar concretamente se ela entende o que está fazendo, e verificar se não há sinais de coação.",
         referencia: "Item CNJ 10.8.14.1",
         providencia: "Padronizar check-list de cautelas para atos ou atendimentos envolvendo pessoas idosas ou vulneráveis."
       }
@@ -370,5 +413,11 @@ const NORMA_LINKS = [
   { re: /Provimento CNJ n\.\s?222\/2026/gi, url: "https://atos.cnj.jus.br/atos/detalhar/6882" },
   { re: /Lei n\.\s?6\.015\/1973/gi, url: "https://www.planalto.gov.br/ccivil_03/leis/l6015.htm" },
   { re: /Lei n\.\s?8\.935\/1994/gi, url: "https://www.planalto.gov.br/ccivil_03/leis/l8935.htm" },
-  { re: /Decreto n\.\s?9\.580\/2018/gi, url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/decreto/d9580.htm" }
+  { re: /Decreto n\.\s?9\.580\/2018/gi, url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/decreto/d9580.htm" },
+  { re: /Lei n\.\s?13\.709\/2018/gi, url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" },
+  { re: /Lei n\.\s?10\.098\/2000/gi, url: "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm" },
+  { re: /Lei n\.\s?13\.146\/2015/gi, url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" },
+  { re: /Decreto n\.\s?5\.296\/2004/gi, url: "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm" },
+  { re: /Lei n\.\s?5\.709\/1971/gi, url: "https://www.planalto.gov.br/ccivil_03/leis/l5709.htm" },
+  { re: /Manual de Orientação Tributária\s?[–-]\s?Cartórios\/RFB/gi, url: "https://www.gov.br/receitafederal/pt-br/centrais-de-conteudo/publicacoes/manuais/manual-de-orientacao-tributaria-cartorios/manual-de-orientacao-tributaria-cartorios_v01.pdf/view" }
 ];
