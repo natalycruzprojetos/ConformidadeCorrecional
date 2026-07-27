@@ -258,6 +258,19 @@ button, input, textarea{ font-family: var(--font); }
 }
 .item-pergunta{ font-size: 15px; font-weight: 600; line-height: 1.45; color: var(--text); flex:1; }
 
+.saiba-mais-btn{
+  font-size: 12px; font-weight: 600; color: var(--accent-dark);
+  background: none; border: none; padding: 0 0 8px; cursor: pointer;
+  text-decoration: underline; text-decoration-style: dotted;
+}
+.saiba-mais-btn:hover{ color: var(--accent); }
+.saiba-mais-btn.aberto{ text-decoration: none; }
+.item-resumo{
+  font-size: 13px; line-height: 1.55; color: var(--text-muted);
+  background: var(--surface-alt); border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 10px 14px; margin: 0 0 12px;
+}
 .item-ref{
   font-size: 12px; color: var(--text-muted);
   background: var(--surface-alt);
