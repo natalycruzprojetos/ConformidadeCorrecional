@@ -26,6 +26,13 @@ const AREAS = [
         resumo: "Subdelegação vedada ocorre quando quem de fato dirige a serventia no dia a dia não é o delegatário, mas um terceiro sem essa atribuição legal — por exemplo, um gerente ou sócio informal.",
         referencia: "Rec. 3.6.20.1",
         providencia: "Reforçar o exercício pessoal da delegação na direção, supervisão e gestão da unidade."
+      },
+      {
+        id: "ADM2",
+        pergunta: "O(a) titular conhece o procedimento de aferição de incapacidade permanente do delegatário previsto no Provimento CNJ n. 220/2026, para o caso de eventual necessidade (própria ou de sucessão na serventia)?",
+        resumo: "O Provimento CNJ n. 220/2026 disciplina o procedimento usado para apurar se um(a) notário(a) ou registrador(a) está permanentemente incapacitado(a) de exercer pessoalmente a delegação — por exemplo, por razões de saúde que impeçam a direção, supervisão e gestão da serventia, mesmo que a pessoa esteja apta para outras atividades. Não é um procedimento disciplinar. Pode ser instaurado por correições, denúncia (inclusive anônima) ou comunicação formal, e considera indício de incapacidade, entre outros, a ausência não localizada por 30 dias corridos consecutivos (ou 45 dias interpolados no mesmo trimestre) ou a falta a 3 convocações por videoconferência. O procedimento tem duas fases (preliminar e contraditória), prazo de 45 dias — prorrogável por 30 —, perícia médica com sigilo dos dados de saúde, possibilidade de afastamento cautelar durante a apuração, e recurso administrativo em 5 dias contra a decisão final. Conhecer esse procedimento ajuda tanto o próprio titular quanto quem avalia uma eventual sucessão na serventia.",
+        referencia: "Provimento CNJ n. 220/2026, arts. 1º a 24",
+        providencia: "Buscar orientação jurídica sobre o procedimento do Provimento CNJ n. 220/2026, especialmente em caso de afastamento por saúde ou planejamento de sucessão."
       }
     ]
   },
@@ -79,10 +86,10 @@ const AREAS = [
       },
       {
         id: "F8",
-        pergunta: "Foi realizado estudo técnico e, se necessário, constituído fundo de provisionamento trabalhista para os colaboradores da serventia, compatível com o passivo estimado?",
-        resumo: "O estudo deve indicar a metodologia de cálculo do valor necessário, os riscos envolvidos (rescisões, verbas trabalhistas, eventual extinção da delegação) e, se for o caso, um plano de implementação do fundo.",
-        referencia: "Itens CNJ 10.6.8; 10.6.9 / Rec. 3.6.20.1",
-        providencia: "Elaborar ou atualizar estudo técnico (com metodologia de cálculo e riscos envolvidos) e constituir fundo de provisionamento trabalhista compatível com o passivo estimado, quando aplicável."
+        pergunta: "Se a arrecadação bruta semestral da serventia for superior a R$ 100.000,00, são apresentadas anualmente (até 31 de março) a Declaração de Passivo Trabalhista e a Declaração de Solvência Trabalhista, elaboradas por contador habilitado no CRC?",
+        resumo: "Desde o Provimento CNJ n. 227/2026, a Corregedoria não pode mais exigir fundo de provisionamento, conta vinculada ou instrumento parecido para verbas trabalhistas — isso foi expressamente proibido. Em vez disso, o delegatário declara todo ano: (1) o passivo trabalhista (o que seria devido a título de verbas rescisórias e encargos se todos os prepostos fossem dispensados) e (2) bens e direitos livres de ônus, em valor suficiente para cobrir esse passivo. Havendo déficit, há 60 dias para regularizar ou apresentar fiança bancária ou seguro-garantia. Serventias vagas, sob interinidade, ou classificadas na Classe I do Provimento CNJ n. 213/2026 estão dispensadas dessa obrigação.",
+        referencia: "Provimento CNJ n. 227/2026, arts. 1º a 20",
+        providencia: "Contratar contador habilitado no CRC para elaborar as declarações anuais; havendo déficit de cobertura, apresentar fiança bancária (instituição S1/S2) ou seguro-garantia dentro de 60 dias."
       },
       {
         id: "F9",
@@ -153,13 +160,6 @@ const AREAS = [
         resumo: "Esse teto usa como referência o subsídio de Ministro do STF e incide sobre a receita líquida do delegatário — não apenas sobre o salário de colaboradores. A base constitucional é o art. 37, XI, da Constituição Federal, aplicada aos delegatários por regulamentação da Corregedoria-Geral (Código de Normas Extrajudicial do TJSP, item 10.5.2, Tomo II). O relatório de inspeção também menciona 'jurisprudência do STF sobre o tema', mas sem indicar o número do processo — não localizamos essa decisão específica com segurança suficiente para citá-la aqui. Se você tiver esse número (por exemplo, via KollGEN), nos avise para completarmos a referência.",
         referencia: "Art. 21 da Lei n. 8.935/1994; art. 37, XI, da Constituição Federal — Itens CNJ 3.6.10.2; 10.4.11 / Det. 10.4.13",
         providencia: "Ajustar remunerações ao teto legal ou formalizar justificativa fundamentada perante a Corregedoria — aplicável tanto a titulares quanto a interinos."
-      },
-      {
-        id: "RH8",
-        pergunta: "A serventia mantém organizados os atos normativos editados ou, na ausência destes, o cronograma e as providências relativas à implementação do Provimento CNJ n. 220/2026, para eventual prestação de informações à Corregedoria?",
-        resumo: "O Provimento CNJ n. 220/2026 é de 2026 — posterior ao nosso conhecimento treinado (que vai até janeiro de 2026) — e não temos acesso à internet neste momento para confirmar seu conteúdo integral. O que se sabe pelo relatório de inspeção é que a Corregedoria-Geral de Justiça do Estado de São Paulo foi determinada a informar à Corregedoria Nacional, em 30 dias, o estágio de implementação desse provimento. Se você tiver o texto do provimento, podemos reescrever esta pergunta com mais contexto sobre o que ele exige.",
-        referencia: "Determinação (30 dias): informar à Corregedoria Nacional o estágio de implementação das disposições do Provimento CNJ n. 220/2026, encaminhando os atos normativos editados ou, se pendente a adequação, o cronograma e as providências previstas — Item CNJ 3.6.19.1.1",
-        providencia: "Reunir e manter atualizados os atos normativos, ou o cronograma de adequação, referentes ao Provimento CNJ n. 220/2026."
       },
       {
         id: "RH9",
@@ -247,17 +247,24 @@ const AREAS = [
       },
       {
         id: "TI10",
-        pergunta: "A serventia já identificou sua classe de risco tecnológico (I, II ou III) segundo o Provimento CNJ n. 213/2026 e tem um plano de adequação com diagnóstico, medidas já implementadas e cronograma das pendentes?",
-        resumo: "O Provimento CNJ n. 213/2026 trata da governança e segurança da infraestrutura tecnológica das serventias extrajudiciais, classificando-as por nível de risco. O plano de adequação deve mostrar o que já foi feito e o que ainda falta, com prazos. Esse provimento é de 2026 e não temos, neste momento, acesso à internet para confirmar todos os detalhes do texto — o conteúdo aqui reflete o que consta no relatório de inspeção.",
-        referencia: "Provimento CNJ n. 213/2026 — achados da inspeção CNJ em serventias de Registro de Imóveis",
-        providencia: "Elaborar ou atualizar o plano de adequação ao Provimento CNJ n. 213/2026, com diagnóstico da infraestrutura, classe de risco identificada e cronograma de implementação."
+        pergunta: "A serventia já identificou sua classe de risco tecnológico (1, 2 ou 3) segundo o Provimento CNJ n. 213/2026 e tem um plano de adequação com diagnóstico, medidas já implementadas e cronograma das pendentes?",
+        resumo: "A classe é definida pela receita bruta semestral da serventia: Classe 1 vai até R$ 300.000,00 (com subclasses A/B/C); Classe 2 vai de R$ 300.000,01 até R$ 1.500.000,00 (subclasses D/E/F); Classe 3 é acima de R$ 1.500.000,00 (subclasses G/H/I/J, em múltiplos desse valor). Esses limites são reajustados todo ano pelo CNJ. Os prazos para concluir a implementação inicial (Etapas 1 e 2 do Anexo IV — governança, conformidade legal, infraestrutura e continuidade), contados da entrada em vigor do Provimento CN n. 243/2026, são: 180 dias para a Classe 3, 240 dias para a Classe 2 e 300 dias para a Classe 1. As etapas seguintes (3 a 5, controles mais avançados) podem ser implementadas de forma progressiva, com até 24 meses para a Classe 3.",
+        referencia: "Provimento CNJ n. 213/2026, arts. 2º, 16, 20 a 23 e Anexo IV (redação dada pelo Provimento CN n. 243/2026)",
+        providencia: "Calcular a receita bruta semestral para identificar a classe/subclasse correta e elaborar plano de adequação com diagnóstico, medidas implementadas e cronograma das pendentes, dentro do prazo aplicável à classe."
       },
       {
         id: "TI11",
         pergunta: "Existe Política de Segurança da Informação formalizada e integrada a um Plano de Continuidade de Negócios, com tempo e ponto de recuperação (RTO/RPO) definidos e já testados na prática?",
-        resumo: "RTO é por quanto tempo o serviço pode ficar fora do ar até ser restabelecido; RPO é quanto tempo de dados a serventia pode se permitir perder num incidente. Definir esses números no papel não basta — é preciso testar a restauração na prática. Vale também verificar se há autenticação multifator (MFA) para acessos administrativos e sistemas críticos, e se os contratos com fornecedores de TI preveem confidencialidade, reversibilidade e portabilidade dos dados.",
-        referencia: "Provimento CNJ n. 213/2026 — achados da inspeção CNJ em serventias de Registro de Imóveis",
-        providencia: "Formalizar a Política de Segurança da Informação e o Plano de Continuidade de Negócios, definir RTO/RPO e realizar testes periódicos de restauração."
+        resumo: "RTO é por quanto tempo o serviço pode ficar fora do ar até ser restabelecido; RPO é quanto tempo de dados a serventia pode se permitir perder num incidente. Definir esses números no papel não basta — é preciso testar a restauração na prática, com periodicidade compatível com a classe da serventia, e registrar o resultado dos testes no dossiê técnico. Para a Classe 3, a autenticação multifator em acessos administrativos, a criptografia e a conformidade com a LGPD já devem estar cumpridas desde o primeiro ciclo, mesmo que os controles mais avançados de monitoramento sejam implementados de forma progressiva. Vale também verificar se os contratos com fornecedores de TI preveem confidencialidade, reversibilidade e portabilidade dos dados.",
+        referencia: "Provimento CNJ n. 213/2026, arts. 5º, 9º, 12 e 22",
+        providencia: "Formalizar a Política de Segurança da Informação e o Plano de Continuidade de Negócios, definir RTO/RPO por classe e realizar testes periódicos de restauração, documentando os resultados."
+      },
+      {
+        id: "TI12",
+        pergunta: "A serventia mantém procedimento documentado para gestão de incidentes de segurança da informação (identificação, classificação por gravidade, contenção, correção e registro), com comunicação à Corregedoria quando o incidente for crítico?",
+        resumo: "Isso vale tanto para incidentes técnicos (ex.: invasão, vazamento, indisponibilidade de sistema) quanto para falhas de segurança identificadas preventivamente (vulnerabilidades). Cada incidente crítico deve ter uma análise de causa raiz registrada, não só a solução aplicada — isso ajuda a evitar que o mesmo problema se repita.",
+        referencia: "Provimento CNJ n. 213/2026, art. 11",
+        providencia: "Documentar um procedimento interno de gestão de incidentes de segurança, com classificação por gravidade e comunicação à Corregedoria nos casos críticos."
       }
     ]
   },
@@ -439,6 +446,41 @@ const AREAS = [
         resumo: "A CNIB é a base oficial de bloqueios judiciais sobre imóveis. Se o sistema local diverge da base nacional do ONR sobre o status de uma indisponibilidade, um registro pode ser indevidamente liberado, dando ao usuário a falsa impressão de que não há impedimento.",
         referencia: "Achados da inspeção CNJ em serventia de Registro de Imóveis — integração com a Central Nacional de Indisponibilidade de Bens (CNIB 2.0)",
         providencia: "Auditar a integração do sistema local com a CNIB/ONR e adotar mecanismos redundantes de verificação do status das indisponibilidades, especialmente para pessoas jurídicas com múltiplas unidades locais."
+      },
+      {
+        id: "RI9",
+        pergunta: "A serventia recebe ordens judiciais de penhora, arresto, sequestro e bloqueio de matrícula exclusivamente pelo Sistema de Constrição Judicial (Constrijud), verificando-o diariamente (abertura, encerramento e a cada 2 horas, salvo uso de API em tempo real)?",
+        resumo: "O Constrijud é o canal oficial e obrigatório do Judiciário para enviar ordens de constrição a cartórios de imóveis, mantido pelo ONR. Ordens recebidas por outro canal devem ser recusadas por nota devolutiva fundamentada — salvo indisponibilidade comprovada do sistema, quando a serventia deve cumprir a ordem mesmo assim e comunicar a irregularidade à Corregedoria e ao ONR. Depois de qualificado, o registro, a averbação ou a nota devolutiva deve sair em até 10 dias úteis, e os emolumentos são pagos pelo próprio sistema.",
+        referencia: "Provimento CNJ n. 224/2026 — arts. 320-X a 320-AN do CNN/CN/CNJ-Extra",
+        providencia: "Adequar a rotina interna para verificação diária do Constrijud e cumprimento do prazo de 10 dias úteis para registro, averbação ou nota devolutiva."
+      },
+      {
+        id: "RI10",
+        pergunta: "A serventia está preparada para receber e qualificar extratos eletrônicos (Provimento CNJ n. 228/2026) enviados por tabeliães, bancos e demais emitentes autorizados, sem dispensar a qualificação registral nem, quando exigido, o arquivamento do instrumento original?",
+        resumo: "O extrato eletrônico é uma versão estruturada e padronizada de um título (ex.: uma escritura), enviada pelo Serp para facilitar o registro. Ele não substitui a qualificação registral: o oficial continua analisando se o ato pode ou não ser registrado, e pode exigir o documento original quando necessário. A implantação é gradual, começando por financiamentos imobiliários (SFH, Minha Casa Minha Vida, SFI).",
+        referencia: "Provimento CNJ n. 228/2026 — arts. 210-A a 210-Q do CNN/CN/CNJ-Extra",
+        providencia: "Acompanhar o cronograma do ONR e adequar o sistema interno para processar extratos eletrônicos estruturados."
+      },
+      {
+        id: "RI11",
+        pergunta: "A serventia mantém adesão e monitoramento operacional diário (no mínimo na abertura e no encerramento do expediente) das plataformas do Serp/'Meu Registro' e dos Operadores Nacionais?",
+        resumo: "'Meu Registro' é o nome da interface unificada de acesso do usuário ao Serp (o Sistema Eletrônico dos Registros Públicos) — não é um novo sistema, é uma nova identidade de acesso. A falta de acesso ou monitoramento diário pode ser comunicada à Corregedoria.",
+        referencia: "Provimento CNJ n. 229/2026 — arts. 228-J a 228-S do CNN/CN/CNJ-Extra",
+        providencia: "Implementar rotina de checagem diária das plataformas do Serp e designar responsável interno."
+      },
+      {
+        id: "RI12",
+        pergunta: "Quando a serventia atua como 'Cartório Orquestrador' em um pedido, evita transferir ao usuário o ônus de obter certidões ou providências complementares que podem ser resolvidas diretamente com outro cartório ('Cartório de Apoio') por interoperabilidade horizontal?",
+        resumo: "A ideia é reduzir a peregrinação do usuário entre cartórios: quando um pedido depende de uma certidão ou providência de outra serventia, o cartório que recebeu o pedido principal (orquestrador) deve buscar isso diretamente, e não mandar o usuário resolver por conta própria. Isso não muda a competência legal de cada cartório.",
+        referencia: "Provimento CNJ n. 229/2026 — arts. 228-T a 228-V do CNN/CN/CNJ-Extra",
+        providencia: "Mapear fluxos internos de interoperabilidade horizontal com outros cartórios, reduzindo exigências desnecessárias ao usuário."
+      },
+      {
+        id: "RI13",
+        pergunta: "Quando uma ordem de indisponibilidade de bens recai sobre imóvel que passou para outra circunscrição de registro, a serventia sabe identificar corretamente onde a averbação deve ser feita?",
+        resumo: "Depende do regime do imóvel. Se o imóvel já tem matrícula: a averbação é feita na circunscrição atual do imóvel, mesmo que ele tenha migrado de circunscrição — a serventia de origem não é mais competente para essa averbação. Se o imóvel ainda está no sistema antigo de transcrição e passou para outra circunscrição: a certidão deve ser enviada ao registrador atual, para abertura de matrícula. Só permanece com a serventia de origem quando a transcrição não reúne os requisitos para abertura de matrícula.",
+        referencia: "Provimento CNJ n. 217/2026 — art. 320-I, §2º, do CNN/CN/CNJ-Extra; art. 169, I, e art. 176, §18, da Lei n. 6.015/1973",
+        providencia: "Consultar o regime do imóvel (matrícula ou transcrição) antes de decidir onde registrar a averbação de indisponibilidade, remetendo ao registrador da circunscrição atual quando aplicável."
       }
     ]
   }
@@ -464,6 +506,7 @@ const MIGRACAO_IDS = {
   "F7": "RH9",
   "RH5": "ADM1",
   "RH6": "PLD4",
+  "RH8": "ADM2",
   "TI2": "F9",
   "TI4": "F10",
   "TI5": "F11",
@@ -489,6 +532,9 @@ const FONTE = {
    Para adicionar novos, inclua { re: /padrão/gi, url: "https://..." }. */
 const NORMA_LINKS = [
   { re: /Provimento CNJ n\.\s?222\/2026/gi, url: "https://atos.cnj.jus.br/atos/detalhar/6882" },
+  { re: /Provimento CNJ n\.\s?149\/2023/gi, url: "https://atos.cnj.jus.br/atos/detalhar/5243" },
+  { re: /Provimento CNJ n\.\s?213\/2026/gi, url: "https://atos.cnj.jus.br/atos/detalhar/6734" },
+  { re: /Provimento CNJ n\.\s?220\/2026/gi, url: "https://atos.cnj.jus.br/atos/detalhar/6873" },
   { re: /Lei n\.\s?6\.015\/1973/gi, url: "https://www.planalto.gov.br/ccivil_03/leis/l6015.htm" },
   { re: /Lei n\.\s?8\.935\/1994/gi, url: "https://www.planalto.gov.br/ccivil_03/leis/l8935.htm" },
   { re: /Decreto n\.\s?9\.580\/2018/gi, url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/decreto/d9580.htm" },
