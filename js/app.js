@@ -1,9 +1,13 @@
 /* ============================================================
-   Checklist de Conformidade Correcional — app.js
+   Regen — Checklist de Conformidade Correcional — app.js
    ============================================================ */
 
 const STORAGE_PREFIX = "checklist-ri-cnj::";
 const JSONBLOB_BASE = "https://jsonblob.com/api/jsonBlob";
+const TAMANHO_MAX_ANEXO = 8 * 1024 * 1024; // 8MB por arquivo
+const DB_NOME = "regen-checklist-anexos";
+const DB_VERSAO = 1;
+const DB_STORE = "anexos";
 
 let ESTADO = {
   cartorio: "",
@@ -11,14 +15,22 @@ let ESTADO = {
   data: "",
   sessaoId: null,
   responsaveisArea: {},
-  respostas: {} // { itemId: { status, detalhes, extra:{}, arquivo:{nome,tipo,tamanho,dados} } }
+  respostas: {} // { itemId: { status, detalhes, extra:{} } }  — status: sim|parcial|nao|na
 };
 
 let timerEnvioSessao = null;
 let timerPolling = null;
+let dbPromise = null;
 
 /* ---------------- Utilidades ---------------- */
-function totalItens(){ return AREAS.reduce((acc, a) => acc + a.itens.length, 0); }
+function todosOsItens(){
+  return AREAS.flatMap(a => a.itens);
+}
+function totalItens(){ return todosOsItens().length; }
+
+function idsValidos(){
+  return new Set(todosOsItens().map(i => i.id));
+}
 
 function escapeHtml(s){
   return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
@@ -41,6 +53,30 @@ function formatarData(iso){
   if(!iso) return "";
   const [a, m, d] = iso.split("-");
   return `${d}/${m}/${a}`;
+}
+
+function formatarTamanho(bytes){
+  if(bytes < 1024) return bytes + " B";
+  if(bytes < 1024 * 1024) return Math.round(bytes / 1024) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+
+/* ---------------- Migração e limpeza de respostas órfãs ---------------- */
+function migrarRespostasAntigas(){
+  Object.keys(MIGRACAO_IDS).forEach(idAntigo => {
+    const idNovo = MIGRACAO_IDS[idAntigo];
+    if(ESTADO.respostas[idAntigo] && !ESTADO.respostas[idNovo]){
+      ESTADO.respostas[idNovo] = ESTADO.respostas[idAntigo];
+    }
+    if(ESTADO.respostas[idAntigo]) delete ESTADO.respostas[idAntigo];
+  });
+}
+
+function limparRespostasOrfas(){
+  const validos = idsValidos();
+  Object.keys(ESTADO.respostas).forEach(id => {
+    if(!validos.has(id)) delete ESTADO.respostas[id];
+  });
 }
 
 /* ---------------- Persistência local ---------------- */
@@ -88,6 +124,8 @@ function carregarPorCartorio(){
       ESTADO.responsaveisArea = dados.responsaveisArea || {};
       ESTADO.titular = dados.titular || ESTADO.titular;
       ESTADO.data = dados.data || ESTADO.data;
+      migrarRespostasAntigas();
+      limparRespostasOrfas();
       return true;
     }
   }catch(e){ console.warn(e); }
@@ -102,26 +140,83 @@ function carregarUltimoUsado(){
       if(raw) ESTADO = Object.assign(ESTADO, JSON.parse(raw));
     }
   }catch(e){ console.warn(e); }
+  migrarRespostasAntigas();
+  limparRespostasOrfas();
 }
 
-/* ---------------- Sidebar / navegação ---------------- */
+/* ---------------- IndexedDB — anexos ---------------- */
+function abrirBanco(){
+  if(dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NOME, DB_VERSAO);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if(!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  return dbPromise;
+}
+
+function chaveAnexos(itemId){
+  return `${chaveAtual()}::${itemId}`;
+}
+
+async function obterAnexos(itemId){
+  try{
+    const db = await abrirBanco();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(DB_STORE, "readonly");
+      const req = tx.objectStore(DB_STORE).get(chaveAnexos(itemId));
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  }catch(e){ console.warn("Falha ao ler anexos:", e); return []; }
+}
+
+async function salvarAnexos(itemId, lista){
+  try{
+    const db = await abrirBanco();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(DB_STORE, "readwrite");
+      tx.objectStore(DB_STORE).put(lista, chaveAnexos(itemId));
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  }catch(e){ console.warn("Falha ao salvar anexos:", e); alert("Não foi possível salvar o anexo neste navegador (armazenamento local pode estar cheio ou indisponível)."); }
+}
+
+/* ---------------- Sidebar / navegação (com grupos) ---------------- */
 function montarNav(){
   const lista = document.getElementById("nav-lista");
   lista.innerHTML = "";
-  AREAS.forEach((area, idx) => {
-    const li = document.createElement("li");
-    li.className = "nav-item";
-    const btn = document.createElement("button");
-    btn.className = "nav-btn" + (idx === 0 ? " ativo" : "");
-    btn.dataset.area = area.id;
-    btn.innerHTML = `
-      <span class="nav-sigla">${area.sigla}</span>
-      <span class="nav-nome">${area.nome}</span>
-      <span class="nav-badge" id="badge-${area.id}">0/${area.itens.length}</span>
-    `;
-    btn.addEventListener("click", () => selecionarArea(area.id));
-    li.appendChild(btn);
-    lista.appendChild(li);
+  let primeira = true;
+
+  GRUPOS.forEach(grupo => {
+    const liGrupo = document.createElement("li");
+    liGrupo.className = "nav-grupo-titulo";
+    liGrupo.textContent = grupo.titulo;
+    lista.appendChild(liGrupo);
+
+    grupo.areas.forEach(areaId => {
+      const area = AREAS.find(a => a.id === areaId);
+      if(!area) return;
+      const li = document.createElement("li");
+      li.className = "nav-item";
+      const btn = document.createElement("button");
+      btn.className = "nav-btn" + (primeira ? " ativo" : "");
+      btn.dataset.area = area.id;
+      btn.innerHTML = `
+        <span class="nav-sigla">${area.sigla}</span>
+        <span class="nav-nome">${area.nome}</span>
+        <span class="nav-badge" id="badge-${area.id}">0/${area.itens.length}</span>
+      `;
+      btn.addEventListener("click", () => selecionarArea(area.id));
+      li.appendChild(btn);
+      lista.appendChild(li);
+      primeira = false;
+    });
   });
 
   const divisor = document.createElement("li");
@@ -196,7 +291,6 @@ function montarAreas(){
     cont.appendChild(sec);
   });
 
-  // religa a nav ao estado ativo, caso a área ativa não seja a primeira
   document.querySelectorAll(".nav-btn[data-area]").forEach(b => b.classList.remove("ativo"));
   const navAtiva = document.querySelector(`.nav-btn[data-area="${idAberta}"]`);
   if(navAtiva) navAtiva.classList.add("ativo");
@@ -248,6 +342,10 @@ function montarItem(item){
         <input type="radio" name="status-${item.id}" id="nao-${item.id}" value="nao" ${resp.status === "nao" ? "checked" : ""}>
         <label for="nao-${item.id}">Não atende</label>
       </div>
+      <div class="resp-opt na">
+        <input type="radio" name="status-${item.id}" id="na-${item.id}" value="na" ${resp.status === "na" ? "checked" : ""}>
+        <label for="na-${item.id}">Não se aplica</label>
+      </div>
     </div>
     ${extraHtml}
     <div class="campo">
@@ -255,7 +353,8 @@ function montarItem(item){
       <textarea id="det-${item.id}" placeholder="Descreva o procedimento atual, ou o plano de ação...">${escapeHtml(resp.detalhes || "")}</textarea>
     </div>
     <div class="campo">
-      <label>Evidência (opcional)</label>
+      <label>Evidências (opcional)</label>
+      <div class="anexo-lista" id="anexo-lista-${item.id}"></div>
       <div class="anexo-row" id="anexo-row-${item.id}"></div>
     </div>
   `;
@@ -279,7 +378,7 @@ function montarItem(item){
     card.querySelector(`#extra-${item.id}`).addEventListener("input", () => atualizarResposta(item));
   }
 
-  renderAnexoRow(item.id, card);
+  renderAnexos(item.id, card);
 
   return card;
 }
@@ -288,7 +387,7 @@ function atualizarResposta(item){
   const status = document.querySelector(`input[name="status-${item.id}"]:checked`);
   const detalhes = document.getElementById(`det-${item.id}`).value;
   const anterior = ESTADO.respostas[item.id] || {};
-  const novo = { status: status ? status.value : null, detalhes, arquivo: anterior.arquivo || null, extra: anterior.extra || {} };
+  const novo = { status: status ? status.value : null, detalhes, extra: anterior.extra || {} };
   if(item.extra){
     const campoExtra = document.getElementById(`extra-${item.id}`);
     novo.extra = { [item.extra.chave]: campoExtra ? campoExtra.value : "" };
@@ -297,62 +396,65 @@ function atualizarResposta(item){
   salvar();
 }
 
-/* ---------------- Anexos ---------------- */
-const TAMANHO_MAX_ANEXO = 2 * 1024 * 1024; // 2MB
+/* ---------------- Anexos (múltiplos, via IndexedDB) ---------------- */
+async function renderAnexos(itemId, card){
+  const listaEl = (card || document).querySelector(`#anexo-lista-${itemId}`);
+  const rowEl = (card || document).querySelector(`#anexo-row-${itemId}`);
+  if(!listaEl || !rowEl) return;
 
-function renderAnexoRow(itemId, card){
-  const row = (card || document).querySelector(`#anexo-row-${itemId}`);
-  if(!row) return;
-  const resp = ESTADO.respostas[itemId] || {};
-  const arquivo = resp.arquivo;
+  const anexos = await obterAnexos(itemId);
 
-  if(arquivo){
-    row.innerHTML = `
-      <span class="anexo-chip">📎 ${escapeHtml(arquivo.nome)} <button type="button" title="Remover anexo" data-remover="${itemId}">✕</button></span>
-    `;
-    row.querySelector("button[data-remover]").addEventListener("click", () => {
-      const atual = ESTADO.respostas[itemId] || {};
-      atual.arquivo = null;
-      ESTADO.respostas[itemId] = atual;
-      salvar();
-      renderAnexoRow(itemId);
+  listaEl.innerHTML = anexos.map((a, idx) => `
+    <span class="anexo-chip">📎 ${escapeHtml(a.nome)} <small>(${formatarTamanho(a.tamanho)})</small>
+      <button type="button" title="Remover anexo" data-remover-idx="${idx}">✕</button>
+    </span>
+  `).join("");
+
+  listaEl.querySelectorAll("button[data-remover-idx]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const idx = Number(btn.dataset.removerIdx);
+      const atuais = await obterAnexos(itemId);
+      atuais.splice(idx, 1);
+      await salvarAnexos(itemId, atuais);
+      renderAnexos(itemId, card);
     });
-  } else {
-    row.innerHTML = `
-      <button type="button" class="anexo-btn" data-anexar="${itemId}">📎 Anexar arquivo</button>
-      <input type="file" id="file-${itemId}" style="display:none">
-      <span class="anexo-aviso">Máx. 2MB — fica salvo neste navegador e é incluído na exportação.</span>
-    `;
-    row.querySelector("button[data-anexar]").addEventListener("click", () => row.querySelector(`#file-${itemId}`).click());
-    row.querySelector(`#file-${itemId}`).addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if(!file) return;
-      if(file.size > TAMANHO_MAX_ANEXO){
-        alert("Arquivo muito grande para anexar (máx. 2MB). Prefira linkar um arquivo externo no campo de detalhes.");
-        return;
-      }
+  });
+
+  rowEl.innerHTML = `
+    <button type="button" class="anexo-btn" data-anexar="${itemId}">📎 Anexar arquivo</button>
+    <input type="file" id="file-${itemId}" style="display:none" multiple>
+    <span class="anexo-aviso">Até 8MB por arquivo. Pode anexar mais de um. Fica salvo neste navegador (IndexedDB) e entra na exportação.</span>
+  `;
+  rowEl.querySelector("button[data-anexar]").addEventListener("click", () => rowEl.querySelector(`#file-${itemId}`).click());
+  rowEl.querySelector(`#file-${itemId}`).addEventListener("change", async (e) => {
+    const arquivos = Array.from(e.target.files || []);
+    if(arquivos.length === 0) return;
+    const grandeDemais = arquivos.filter(f => f.size > TAMANHO_MAX_ANEXO);
+    const validos = arquivos.filter(f => f.size <= TAMANHO_MAX_ANEXO);
+    if(grandeDemais.length){
+      alert(`${grandeDemais.length} arquivo(s) acima de 8MB não foram anexados: ${grandeDemais.map(f => f.name).join(", ")}`);
+    }
+    const lidos = await Promise.all(validos.map(file => new Promise((resolve) => {
       const leitor = new FileReader();
-      leitor.onload = () => {
-        const atual = ESTADO.respostas[itemId] || {};
-        atual.arquivo = { nome: file.name, tipo: file.type, tamanho: file.size, dados: leitor.result };
-        ESTADO.respostas[itemId] = atual;
-        salvar();
-        renderAnexoRow(itemId);
-      };
+      leitor.onload = () => resolve({ nome: file.name, tipo: file.type, tamanho: file.size, dados: leitor.result });
       leitor.readAsDataURL(file);
-    });
-  }
+    })));
+    const atuais = await obterAnexos(itemId);
+    await salvarAnexos(itemId, atuais.concat(lidos));
+    renderAnexos(itemId, card);
+  });
 }
 
 /* ---------------- Progresso ---------------- */
 function atualizarProgresso(){
   const total = totalItens();
-  const respondidos = Object.values(ESTADO.respostas).filter(r => r && r.status).length;
+  const validos = idsValidos();
+  const respondidos = Object.entries(ESTADO.respostas).filter(([id, r]) => validos.has(id) && r && r.status).length;
   const pct = total ? Math.round((respondidos / total) * 100) : 0;
   const txt = document.getElementById("progresso-txt");
   const fill = document.getElementById("progresso-fill");
   if(txt) txt.textContent = `${respondidos} de ${total} itens respondidos (${pct}%)`;
-  if(fill) fill.style.width = pct + "%";
+  if(fill) fill.style.width = Math.min(pct, 100) + "%";
 
   AREAS.forEach(area => {
     const badge = document.getElementById(`badge-${area.id}`);
@@ -400,18 +502,20 @@ function recarregarTudoNaTela(){
 
 /* ---------------- Relatório ---------------- */
 function calcularEstatisticas(){
-  let sim = 0, parcial = 0, nao = 0, pendente = 0;
+  let sim = 0, parcial = 0, nao = 0, na = 0, pendente = 0;
   const total = totalItens();
-  AREAS.forEach(area => area.itens.forEach(item => {
+  const validos = idsValidos();
+  todosOsItens().forEach(item => {
     const r = ESTADO.respostas[item.id];
     if(!r || !r.status) pendente++;
     else if(r.status === "sim") sim++;
     else if(r.status === "parcial") parcial++;
     else if(r.status === "nao") nao++;
-  }));
-  const respondidos = sim + parcial + nao;
-  const score = respondidos ? ((sim * 1 + parcial * 0.5) / total) * 100 : 0;
-  return { sim, parcial, nao, pendente, total, score: Math.round(score) };
+    else if(r.status === "na") na++;
+  });
+  const baseCalculo = total - na;
+  const score = baseCalculo > 0 ? ((sim * 1 + parcial * 0.5) / baseCalculo) * 100 : 0;
+  return { sim, parcial, nao, na, pendente, total, baseCalculo, score: Math.round(score) };
 }
 
 function seloSVG(pct){
@@ -431,17 +535,17 @@ function seloSVG(pct){
 }
 
 function textoConclusao(stats){
-  const { pendente, total, score } = stats;
+  const { pendente, total, score, na } = stats;
   let nivel, orientacao;
   if(pendente === total){
     nivel = "Checklist ainda não iniciado.";
     orientacao = "Preencha os itens de cada área para gerar um diagnóstico de conformidade.";
   } else if(score >= 85 && pendente === 0){
     nivel = "Situação geral: conforme, com baixo risco correcional.";
-    orientacao = "A serventia atende à maior parte dos requisitos identificados no Boletim de Inspeções CNJ. Recomenda-se manter rotina de reavaliação periódica e tratar os itens parciais remanescentes.";
+    orientacao = "A serventia atende à maior parte dos requisitos identificados no relatório de inspeção CNJ. Recomenda-se manter rotina de reavaliação periódica e tratar os itens parciais remanescentes.";
   } else if(score >= 60){
     nivel = "Situação geral: atenção — há pendências relevantes.";
-    orientacao = "Existem não conformidades e itens parciais que podem ser objeto de determinação em correição. Recomenda-se priorizar as providências indicadas abaixo, sobretudo as de natureza financeira, PLD/FTP e proteção de dados, que concentram as determinações do Boletim CNJ.";
+    orientacao = "Existem não conformidades e itens parciais que podem ser objeto de determinação em correição. Recomenda-se priorizar as providências indicadas abaixo, sobretudo as de natureza financeira, PLD/FTP e proteção de dados, que concentram as determinações do relatório de inspeção CNJ.";
   } else {
     nivel = "Situação geral: crítica — exposição correcional relevante.";
     orientacao = "O volume de não conformidades identificado é significativo e reproduz padrões apontados como graves na inspeção CNJ (ex.: ausência de segregação de depósito prévio, fragilidades de TI e de PLD/FTP). Recomenda-se plano de saneamento formal, com cronograma, responsáveis e prazos, e comunicação ao Juízo Corregedor Permanente quando cabível.";
@@ -449,12 +553,13 @@ function textoConclusao(stats){
   const pendenteTxt = pendente > 0
     ? ` Há ainda ${pendente} item(ns) sem resposta — recomenda-se concluir o preenchimento antes de considerar o diagnóstico definitivo.`
     : "";
-  return `<p><b>${nivel}</b></p><p>${orientacao}${pendenteTxt}</p>`;
+  const naTxt = na > 0 ? ` ${na} item(ns) foram marcados como não aplicáveis e não entram no cálculo de conformidade.` : "";
+  return `<p><b>${nivel}</b></p><p>${orientacao}${pendenteTxt}${naTxt}</p>`;
 }
 
-function anexoParaLink(arquivo){
+async function anexoParaLink(anexo){
   try{
-    const partes = arquivo.dados.split(",");
+    const partes = anexo.dados.split(",");
     const meta = partes[0].match(/data:(.*);base64/);
     const tipo = meta ? meta[1] : "application/octet-stream";
     const bin = atob(partes[1]);
@@ -465,7 +570,7 @@ function anexoParaLink(arquivo){
   }catch(e){ return null; }
 }
 
-function gerarRelatorio(){
+async function gerarRelatorio(){
   const stats = calcularEstatisticas();
 
   document.getElementById("rel-cartorio").textContent = ESTADO.cartorio || "Cartório não identificado";
@@ -478,68 +583,89 @@ function gerarRelatorio(){
   document.getElementById("resumo-sim").textContent = stats.sim;
   document.getElementById("resumo-parcial").textContent = stats.parcial;
   document.getElementById("resumo-nao").textContent = stats.nao;
+  document.getElementById("resumo-na").textContent = stats.na;
   document.getElementById("resumo-pendente").textContent = stats.pendente;
 
   document.getElementById("rel-conclusao-corpo").innerHTML = textoConclusao(stats);
 
   const cont = document.getElementById("rel-areas");
   cont.innerHTML = "";
-  AREAS.forEach(area => {
-    const pendencias = area.itens.filter(item => {
-      const r = ESTADO.respostas[item.id];
-      return !r || !r.status || r.status === "nao" || r.status === "parcial";
-    });
 
-    const bloco = document.createElement("div");
-    bloco.className = "rel-area-bloco";
-    const totalArea = area.itens.length;
-    const okArea = totalArea - pendencias.length;
-    const responsavelArea = ESTADO.responsaveisArea[area.id];
-    bloco.innerHTML = `<h3>${area.nome} <span class="tag">${okArea}/${totalArea} conforme</span></h3>` +
-      (responsavelArea ? `<p style="font-size:12.5px;color:var(--text-muted);margin:0 0 8px;">Responsável pelo assunto: <b>${escapeHtml(responsavelArea)}</b></p>` : "");
+  for(const grupo of GRUPOS){
+    const tituloGrupo = document.createElement("h3");
+    tituloGrupo.className = "rel-grupo-titulo";
+    tituloGrupo.textContent = grupo.titulo;
+    cont.appendChild(tituloGrupo);
 
-    if(pendencias.length === 0){
-      const ok = document.createElement("div");
-      ok.className = "sem-pendencia";
-      ok.textContent = "Todos os itens desta área foram avaliados como conformes.";
-      bloco.appendChild(ok);
-    } else {
-      pendencias.forEach(item => {
+    for(const areaId of grupo.areas){
+      const area = AREAS.find(a => a.id === areaId);
+      if(!area) continue;
+
+      const pendencias = area.itens.filter(item => {
         const r = ESTADO.respostas[item.id];
-        const status = r && r.status;
-        const div = document.createElement("div");
-        div.className = "pendencia" + (status === "parcial" ? " parcial" : "");
-        const statusTxt = status === "parcial" ? "Parcialmente atendido" : status === "nao" ? "Não atendido" : "Ainda não avaliado";
-
-        let metaPartes = [];
-        if(r && r.detalhes) metaPartes.push(escapeHtml(r.detalhes));
-        if(item.extra && r && r.extra && r.extra[item.extra.chave]){
-          metaPartes.push(`${item.extra.label}: ${escapeHtml(String(r.extra[item.extra.chave]))}`);
-        }
-        let anexoHtml = "";
-        if(r && r.arquivo){
-          const url = anexoParaLink(r.arquivo);
-          anexoHtml = url
-            ? ` &nbsp;<a href="${url}" target="_blank" rel="noopener">📎 ${escapeHtml(r.arquivo.nome)}</a>`
-            : ` &nbsp;📎 ${escapeHtml(r.arquivo.nome)}`;
-        }
-
-        div.innerHTML = `
-          <div class="p-titulo">${item.id} — ${item.pergunta}</div>
-          <div class="p-ref">${linkify(item.referencia)}</div>
-          <div class="p-prov"><b>Status:</b> ${statusTxt}. <b>Providência recomendada:</b> ${item.providencia}${anexoHtml}</div>
-          ${metaPartes.length ? `<div class="p-meta">${metaPartes.join(" — ")}</div>` : ""}
-        `;
-        bloco.appendChild(div);
+        return !r || !r.status || r.status === "nao" || r.status === "parcial";
       });
+
+      const bloco = document.createElement("div");
+      bloco.className = "rel-area-bloco";
+      const totalArea = area.itens.length;
+      const naArea = area.itens.filter(i => ESTADO.respostas[i.id] && ESTADO.respostas[i.id].status === "na").length;
+      const okArea = totalArea - pendencias.length - naArea;
+      const responsavelArea = ESTADO.responsaveisArea[area.id];
+      bloco.innerHTML = `<h4>${area.nome} <span class="tag">${okArea}/${totalArea - naArea} conforme${naArea ? ` · ${naArea} não aplicável` : ""}</span></h4>` +
+        (responsavelArea ? `<p class="rel-area-responsavel">Responsável pelo assunto: <b>${escapeHtml(responsavelArea)}</b></p>` : "");
+
+      if(pendencias.length === 0){
+        const ok = document.createElement("div");
+        ok.className = "sem-pendencia";
+        ok.textContent = "Todos os itens desta área foram avaliados como conformes ou não aplicáveis.";
+        bloco.appendChild(ok);
+      } else {
+        for(const item of pendencias){
+          const r = ESTADO.respostas[item.id];
+          const status = r && r.status;
+          const div = document.createElement("div");
+          div.className = "pendencia" + (status === "parcial" ? " parcial" : "");
+          const statusTxt = status === "parcial" ? "Parcialmente atendido" : status === "nao" ? "Não atendido" : "Ainda não avaliado";
+
+          let metaPartes = [];
+          if(r && r.detalhes) metaPartes.push(escapeHtml(r.detalhes));
+          if(item.extra && r && r.extra && r.extra[item.extra.chave]){
+            metaPartes.push(`${item.extra.label}: ${escapeHtml(String(r.extra[item.extra.chave]))}`);
+          }
+
+          const anexos = await obterAnexos(item.id);
+          let anexoHtml = "";
+          for(const anexo of anexos){
+            const url = await anexoParaLink(anexo);
+            anexoHtml += url
+              ? ` <a href="${url}" target="_blank" rel="noopener">📎 ${escapeHtml(anexo.nome)}</a>`
+              : ` 📎 ${escapeHtml(anexo.nome)}`;
+          }
+
+          div.innerHTML = `
+            <div class="p-titulo">${item.id} — ${item.pergunta}</div>
+            <div class="p-ref">${linkify(item.referencia)}</div>
+            <div class="p-prov"><b>Status:</b> ${statusTxt}. <b>Providência recomendada:</b> ${item.providencia}${anexoHtml}</div>
+            ${metaPartes.length ? `<div class="p-meta">${metaPartes.join(" — ")}</div>` : ""}
+          `;
+          bloco.appendChild(div);
+        }
+      }
+      cont.appendChild(bloco);
     }
-    cont.appendChild(bloco);
-  });
+  }
 }
 
 /* ---------------- Exportar / Importar / Reset ---------------- */
-function exportarJSON(){
-  const blob = new Blob([JSON.stringify(ESTADO, null, 2)], { type: "application/json" });
+async function exportarJSON(){
+  const dadosExport = JSON.parse(JSON.stringify(ESTADO));
+  dadosExport.anexos = {};
+  for(const item of todosOsItens()){
+    const anexos = await obterAnexos(item.id);
+    if(anexos.length) dadosExport.anexos[item.id] = anexos;
+  }
+  const blob = new Blob([JSON.stringify(dadosExport, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const nome = (ESTADO.cartorio || "checklist").trim().replace(/\s+/g, "-").toLowerCase();
@@ -553,10 +679,17 @@ function exportarJSON(){
 
 function importarJSON(file){
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     try{
       const dados = JSON.parse(e.target.result);
+      const anexosImportados = dados.anexos || {};
+      delete dados.anexos;
       ESTADO = Object.assign({ cartorio: "", titular: "", data: "", sessaoId: ESTADO.sessaoId, responsaveisArea: {}, respostas: {} }, dados);
+      migrarRespostasAntigas();
+      limparRespostasOrfas();
+      for(const itemId of Object.keys(anexosImportados)){
+        await salvarAnexos(itemId, anexosImportados[itemId]);
+      }
       recarregarTudoNaTela();
       salvar();
       alert("Respostas importadas com sucesso.");
@@ -610,7 +743,7 @@ async function criarSessaoColaborativa(){
     ESTADO.sessaoId = id;
     atualizarURLSessao(id);
     iniciarPolling();
-    setColabStatus("Sessão criada. Compartilhe o link abaixo.", "ok");
+    setColabStatus("Sessão criada. Compartilhe o link abaixo. Observação: anexos não são sincronizados pela sessão — apenas texto.", "ok");
     atualizarPainelColab();
   }catch(err){
     console.warn(err);
@@ -641,6 +774,8 @@ async function receberSessao(silencioso){
     if(JSON.stringify(remoto) !== JSON.stringify(ESTADO)){
       remoto.sessaoId = ESTADO.sessaoId;
       ESTADO = Object.assign({ cartorio: "", titular: "", data: "", responsaveisArea: {}, respostas: {} }, remoto);
+      migrarRespostasAntigas();
+      limparRespostasOrfas();
       recarregarTudoNaTela();
     }
     if(!silencioso) setColabStatus("Sincronizado às " + horaAtual(), "ok");
@@ -674,7 +809,7 @@ function atualizarPainelColab(){
     const link = window.location.origin + window.location.pathname + "?sessao=" + ESTADO.sessaoId;
     painel.innerHTML = `
       <h3>Sessão colaborativa ativa</h3>
-      <p>Qualquer pessoa com este link pode preencher o checklist. As respostas são sincronizadas entre todos automaticamente — evite editar o mesmo item ao mesmo tempo que outra pessoa. Ao final, o(a) oficial gera o relatório normalmente.</p>
+      <p>Qualquer pessoa com este link pode preencher o checklist. As respostas de texto são sincronizadas entre todos automaticamente — evite editar o mesmo item ao mesmo tempo que outra pessoa. Anexos ficam salvos só no navegador de quem anexou. Ao final, o(a) oficial gera o relatório normalmente.</p>
       <div class="colab-link-row">
         <input type="text" id="colab-link" value="${escapeAttr(link)}" readonly>
         <button class="btn primario" id="btn-copiar-link" type="button">Copiar link</button>
@@ -693,7 +828,7 @@ function atualizarPainelColab(){
   } else {
     painel.innerHTML = `
       <h3>Preenchimento colaborativo</h3>
-      <p>Gere um link para que várias pessoas preencham o checklist ao mesmo tempo, cada uma na sua área. Depende de um serviço gratuito externo (jsonblob.com); se preferir não depender dele, use os botões "Exportar" / "Importar" para revezar o preenchimento manualmente.</p>
+      <p>Gere um link para que várias pessoas preencham o checklist ao mesmo tempo, cada uma na sua área. Depende de um serviço gratuito externo (jsonblob.com) e sincroniza apenas texto — anexos não são compartilhados pela sessão. Se preferir não depender dele, use os botões "Exportar" / "Importar" para revezar o preenchimento manualmente.</p>
       <button class="btn primario" id="btn-criar-sessao" type="button">Criar link de preenchimento colaborativo</button>
       <div class="colab-status" id="colab-status"></div>
     `;
