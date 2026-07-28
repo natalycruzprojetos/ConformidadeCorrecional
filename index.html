@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checklist de Conformidade Correcional — Registro de Imóveis</title>
+<title>Regen — Checklist de Conformidade Correcional</title>
 <meta name="description" content="Checklist de verificação de requisitos correcionais para cartórios de Registro de Imóveis, com base no Boletim de Inspeções CNJ.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +17,8 @@
   <!-- Menu lateral -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark">RI</div>
-      <div class="brand-text">Conformidade Correcional<small>Registro de Imóveis</small></div>
+      <div class="brand-mark">R</div>
+      <div class="brand-text">Regen<small>Checklist de Conformidade Correcional</small></div>
     </div>
 
     <ul class="nav-lista" id="nav-lista" aria-label="Áreas do checklist"></ul>
@@ -42,12 +42,12 @@
 
       <div class="capa-fields">
         <div class="field">
-          <label for="in-cartorio">Nome do cartório</label>
+          <label for="in-cartorio">Cartório</label>
           <input type="text" id="in-cartorio" placeholder="Ex.: 5º Ofício de Registro de Imóveis de São Paulo" list="lista-cartorios" autocomplete="off">
           <datalist id="lista-cartorios"></datalist>
         </div>
         <div class="field">
-          <label for="in-titular">Responsável geral pelo preenchimento</label>
+          <label for="in-titular">Responsável</label>
           <input type="text" id="in-titular" placeholder="Nome do oficial ou preposto">
         </div>
         <div class="field">
@@ -57,7 +57,7 @@
       </div>
 
       <div class="capa-fonte">
-        Base normativa: Boletim de Inspeções CNJ (KollGEN) — Inspeção ordinária da Corregedoria Nacional de Justiça, Foro Extrajudicial, TJSP, 4 a 8 de maio de 2026. Cada item indica o dispositivo correcional e/ou normativo correspondente.
+        Base normativa: relatório completo de inspeção ordinária da Corregedoria Nacional de Justiça, Foro Extrajudicial, TJSP, 4 a 8 de maio de 2026. Cada item indica o dispositivo correcional e/ou normativo correspondente.
       </div>
     </header>
 
@@ -93,6 +93,7 @@
         <div class="resumo-card sim"><span class="num" id="resumo-sim">0</span><span class="lbl">Sim, atende</span></div>
         <div class="resumo-card parcial"><span class="num" id="resumo-parcial">0</span><span class="lbl">Parcial</span></div>
         <div class="resumo-card nao"><span class="num" id="resumo-nao">0</span><span class="lbl">Não atende</span></div>
+        <div class="resumo-card na"><span class="num" id="resumo-na">0</span><span class="lbl">Não se aplica</span></div>
         <div class="resumo-card pendente"><span class="num" id="resumo-pendente">0</span><span class="lbl">Não avaliado</span></div>
       </div>
 
